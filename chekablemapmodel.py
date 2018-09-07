@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QAbstractListModel, QModelIndex, QVariant
 
 class CheckableMapModel(QAbstractListModel):
 
-    def __init__(self, parent=None, data=None):
+    def __init__(self, parent=None, data=None, sort: bool=True):
         super(CheckableMapModel, self).__init__(parent)
         self.mapData = dict()
         self.strList = list()
@@ -16,16 +16,22 @@ class CheckableMapModel(QAbstractListModel):
         self.singleCheckText = ""
 
         if data is not None:
-            self.initModel(data)
+            if sort:
+                self.initModel(data, sort=True)
+            else:
+                self.initModel(data, sort=False)
 
-    def initModel(self, data: dict):
+    def initModel(self, data: dict, sort: bool=True):
         count = len(data.values()) - 1
         if count < 0:
             count = 0
         # self.beginResetModel()
         self.beginInsertRows(QModelIndex(), 0, count)
         self.mapData = data
-        self.strList = list(sorted(self.mapData.values()))
+        if sort:
+            self.strList = list(sorted(self.mapData.values()))
+        else:
+            self.strList = list(self.mapData.values())
         self.checkList = [2 for i in range(len(self.strList))]
         self.endInsertRows()
         # self.endResetModel()

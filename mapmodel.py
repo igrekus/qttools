@@ -39,7 +39,7 @@ class MapModel(QAbstractListModel):
         self.endRemoveRows()
 
     def addItemAtPosition(self, pos, id_, string):
-        self.beginInsertRows(QModelIndex(), pos, pos);
+        self.beginInsertRows(QModelIndex(), pos, pos)
         self.mapData[id_] = string
         self.strList.insert(pos, string)
         self.endInsertRows()
@@ -94,7 +94,7 @@ class MapModel(QAbstractListModel):
             if index.column() == 0:
                 return QVariant(self.strList[row])
 
-        elif role == const.RoleNodeId:
+        elif role == mytools.const.RoleNodeId:
             return QVariant(self.getId(self.strList[row]))
 
         return QVariant()
