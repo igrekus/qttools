@@ -6,24 +6,30 @@ from PyQt5.QtCore import Qt, QAbstractListModel, QModelIndex, QVariant
 
 class MapModel(QAbstractListModel):
 
-    def __init__(self, parent=None, data=None):
+    RoleNodeId = mytools.const.RoleNodeId
+
+    def __init__(self, parent=None, data=None, sort=True):
         super(MapModel, self).__init__(parent)
         self.mapData = dict()
         self.strList = list()
+        self.tooltipList = list()
+
+        self._sort = sort
 
         if data is not None:
             self.initModel(data)
 
     def initModel(self, data: dict):
-        count = len(data.values()) - 1
-        if count < 0:
-            count = 0
-        # self.beginResetModel()
-        self.beginInsertRows(QModelIndex(), 0, count)
+        self.beginResetModel()
         self.mapData = data
-        self.strList = list(sorted(self.mapData.values()))
-        self.endInsertRows()
-        # self.endResetModel()
+        vals = sorted(self.mapData.values(), key=lambda v: v[0]) if self._sort else list(self.mapData.values())
+        if isinstance(vals[0], tuple):
+            self.strList = [val[0] for val in vals]
+            self.tooltipList = [val[1] for val in vals]
+        else:
+            self.strList = [val for val in vals]
+            self.tooltipList = [val for val in vals]
+        self.endResetModel()
 
     def copyItems(self, model: dict):
         self.beginResetModel()
@@ -90,9 +96,12 @@ class MapModel(QAbstractListModel):
 
         row = index.row()
 
-        if role == Qt.DisplayRole or role == Qt.ToolTipRole:
+        if role == Qt.DisplayRole:
             if index.column() == 0:
                 return QVariant(self.strList[row])
+        elif role == Qt.ToolTipRole:
+            if index.column() == 0:
+                return QVariant(self.tooltipList[row])
 
         elif role == mytools.const.RoleNodeId:
             return QVariant(self.getId(self.strList[row]))
@@ -101,8 +110,12 @@ class MapModel(QAbstractListModel):
 
     def getId(self, search_str=""):
         for i, string in self.mapData.items():
-            if string == search_str:
-                return i
+            if isinstance(string, tuple):
+                if string[0] == search_str:
+                    return i
+            else:
+                if string == search_str:
+                    return i
 
     def getData(self, id_=None):
         return self.mapData[id_]
