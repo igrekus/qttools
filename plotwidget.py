@@ -71,6 +71,8 @@ class PlotWidget(QWidget):
     def savefig(self, *args, **kwargs):
         self._figure.savefig(*args, **kwargs)
 
-
+    def legend(self, *args, **kwargs):
+        self._ax.legend(*args, **kwargs)
+        self._figure.canvas.draw()
 
 
