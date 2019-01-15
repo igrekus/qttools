@@ -61,6 +61,10 @@ class PlotWidget(QWidget):
         self._ax.axhline(*args, **kwargs)
         self._figure.canvas.draw()
 
+    def axvline(self, *args, **kwargs):
+        self._ax.axvline(*args, **kwargs)
+        self._figure.canvas.draw()
+
     def set_yticks(self, *args, **kwargs):
         self._ax.set_yticks(*args, **kwargs)
         self._figure.canvas.draw()
