@@ -53,6 +53,7 @@ class PlotWidget(QWidget):
     def plot(self, *args, **kwargs):
         self._ax.plot(*args, **kwargs)
         self._figure.canvas.draw()
+        self._figure.tight_layout()
 
     def draw(self, *args, **kwargs):
         self._figure.canvas.draw(*args, **kwargs)
