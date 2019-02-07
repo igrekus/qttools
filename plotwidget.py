@@ -80,4 +80,6 @@ class PlotWidget(QWidget):
         self._ax.legend(*args, **kwargs)
         self._figure.canvas.draw()
 
+    def tight_layout(self, *args, **kwargs):
+        self._figure.tight_layout(*args, **kwargs)
 
