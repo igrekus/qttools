@@ -67,13 +67,9 @@ class MapModel(QAbstractListModel):
         self.mapData[id_] = string
         self.strList[pos] = string
 
-        # self.dataChanged(self.index(pos, 0, QModelIndex()), self.index(pos, 0, QModelIndex()))
-
     def removeItem(self, id_):
-        # self.beginRemoveRows()
         self.strList.remove(self.mapData[id_])
         del self.mapData[id_]
-        # self.endRemoveRows()
 
     def isEmpty(self):
         return not bool(self.strList)
