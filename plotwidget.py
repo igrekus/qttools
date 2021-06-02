@@ -49,6 +49,7 @@ class PlotWidget(QWidget):
 
     def clear(self, *args, **kwargs):
         self._ax.clear(*args, **kwargs)
+        self._figure.canvas.draw()
 
     def plot(self, *args, **kwargs):
         self._ax.plot(*args, **kwargs)
