@@ -261,7 +261,7 @@ class MeasureWidget(QWidget):
     def __init__(self, parent=None, controller=None):
         super().__init__(parent=parent)
 
-        self._ui = uic.loadUi('measurewidget.ui', self)
+        self._ui = uic.loadUi(markup, self)
         self._controller = controller
         self._threads = QThreadPool()
 
