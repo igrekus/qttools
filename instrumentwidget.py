@@ -107,6 +107,7 @@ class InstrumentWidget(QWidget):
         super().__init__(parent=parent)
 
         # TODO fix xml parse error if read from bundled markup
+        # HACK project dir must have 'instrumentwidget.ui' file for now
         self._ui = uic.loadUi('instrumentwidget.ui', self)
         # self._ui = uic.loadUi(markup, self)
 
