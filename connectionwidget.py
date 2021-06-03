@@ -4,7 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, QRunnable, QThreadPool
 from PyQt5.QtWidgets import QWidget
 
-from instrumentwidget import InstrumentWidget
+from mytools.instrumentwidget import InstrumentWidget
 
 
 markup = BytesIO(bytes('''<?xml version="1.0" encoding="UTF-8"?>

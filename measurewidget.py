@@ -4,7 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThreadPool, QRunnable
 from PyQt5.QtWidgets import QWidget
 
-from mytools.deviceselectwidget import DeviceSelectWidget
+from .deviceselectwidget import DeviceSelectWidget
 
 
 markup = BytesIO(bytes('''<?xml version="1.0" encoding="UTF-8"?>
