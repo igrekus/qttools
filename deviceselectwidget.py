@@ -50,13 +50,14 @@ class DeviceSelectWidget(QWidget):
 
     def createWidgets(self, params: dict):
         makers = {
-            'spin': _make_double_spinbox,
-            'check': _make_checkbox,
+            float: _make_double_spinbox,
+            bool: _make_checkbox,
         }
         for key, settings in params.items():
-            make, label, args = settings
+            label, args = settings
+            make = type(args['value'])
             widget = makers[make](**args)
-            if make == 'check':
+            if make == bool:
                 widget.value = widget.isChecked
                 widget.valueChanged = widget.toggled
                 widget.setValue = widget.setChecked
@@ -88,7 +89,7 @@ def _make_double_spinbox(parent, start=0.0, end=1.0, step=0.1, decimals=2, value
     return spinbox
 
 
-def _make_checkbox(parent, is_checked):
+def _make_checkbox(parent, value):
     checkbox = QCheckBox(parent=parent)
-    checkbox.setChecked(is_checked)
+    checkbox.setChecked(value)
     return checkbox
