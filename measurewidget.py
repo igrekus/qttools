@@ -15,7 +15,7 @@ markup = BytesIO(bytes('''<?xml version="1.0" encoding="UTF-8"?>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>218</width>
+    <width>224</width>
     <height>113</height>
    </rect>
   </property>
@@ -166,6 +166,16 @@ markup = BytesIO(bytes('''<?xml version="1.0" encoding="UTF-8"?>
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="btnCalibrateMod">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Кал. мод.</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="btnCalibrateRF">
              <property name="enabled">
               <bool>false</bool>
@@ -252,8 +262,9 @@ class CancelToken:
 
 class MeasureWidget(QWidget):
 
-    selectedChanged = pyqtSignal(int)
+    selectedChanged = pyqtSignal(str)
     sampleFound = pyqtSignal()
+    sampleNotFound = pyqtSignal()
     measureComplete = pyqtSignal()
     measureStarted = pyqtSignal()
     calibrateFinished = pyqtSignal()
@@ -285,6 +296,7 @@ class MeasureWidget(QWidget):
             print('sample not found')
             # QMessageBox.information(self, 'Ошибка', 'Не удалось найти образец, проверьте подключение')
             self._modePreCheck()
+            self.sampleNotFound.emit()
             return False
 
         print('found sample')
@@ -324,7 +336,11 @@ class MeasureWidget(QWidget):
     @pyqtSlot()
     def on_btnCheck_clicked(self):
         print('checking sample presence')
-        self.check()
+        try:
+            self.check()
+
+        except Exception as ex:
+            print(ex)
 
     @pyqtSlot()
     def on_btnCalibrateLO_clicked(self):
@@ -337,6 +353,11 @@ class MeasureWidget(QWidget):
         self.calibrate('RF')
 
     @pyqtSlot()
+    def on_btnCalibrateMod_clicked(self):
+        print('start Mod calibration')
+        self.calibrate('Mod')
+
+    @pyqtSlot()
     def on_btnMeasure_clicked(self):
         print('start measure')
         self.measureStarted.emit()
@@ -347,7 +368,7 @@ class MeasureWidget(QWidget):
         print('cancel click')
         self.cancel()
 
-    @pyqtSlot(int)
+    @pyqtSlot(str)
     def on_selectedChanged(self, value):
         self._selectedDevice = value
         self.selectedChanged.emit(value)
@@ -362,6 +383,7 @@ class MeasureWidget(QWidget):
         self._ui.btnCancel.setEnabled(False)
         self._ui.btnCalibrateLO.setEnabled(False)
         self._ui.btnCalibrateRf.setEnabled(False)
+        self._ui.btnCalibrateMod.setEnabled(False)
         self._paramInputWidget.enabled = True
 
     def _modePreCheck(self):
@@ -370,6 +392,7 @@ class MeasureWidget(QWidget):
         self._ui.btnCancel.setEnabled(False)
         self._ui.btnCalibrateLO.setEnabled(False)
         self._ui.btnCalibrateRF.setEnabled(False)
+        self._ui.btnCalibrateMod.setEnabled(False)
         self._paramInputWidget.enabled = True
 
     def _modeDuringCheck(self):
@@ -378,6 +401,7 @@ class MeasureWidget(QWidget):
         self._ui.btnCancel.setEnabled(False)
         self._ui.btnCalibrateLO.setEnabled(False)
         self._ui.btnCalibrateRF.setEnabled(False)
+        self._ui.btnCalibrateMod.setEnabled(False)
         self._paramInputWidget.enabled = False
 
     def _modePreMeasure(self):
@@ -386,6 +410,7 @@ class MeasureWidget(QWidget):
         self._ui.btnCancel.setEnabled(False)
         self._ui.btnCalibrateLO.setEnabled(True)
         self._ui.btnCalibrateRF.setEnabled(True)
+        self._ui.btnCalibrateMod.setEnabled(True)
         self._paramInputWidget.enabled = False
 
     def _modeDuringMeasure(self):
@@ -394,6 +419,7 @@ class MeasureWidget(QWidget):
         self._ui.btnCancel.setEnabled(True)
         self._ui.btnCalibrateLO.setEnabled(False)
         self._ui.btnCalibrateRF.setEnabled(False)
+        self._ui.btnCalibrateMod.setEnabled(False)
         self._paramInputWidget.enabled = False
 
     def updateWidgets(self, params):
