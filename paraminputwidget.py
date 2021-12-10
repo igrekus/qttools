@@ -128,18 +128,6 @@ class ParamInputWidget(QWidget):
             label, args = settings
             make = type(args['value'])
             widget = makers[make](self, **args)
-            if make == bool:
-                widget.value = widget.isChecked
-                widget.valueChanged = widget.toggled
-                widget.setValue = widget.setChecked
-            if make == str:
-                widget.value = widget.text
-                widget.valueChanged = widget.textChanged
-                widget.setValue = widget.setText
-            if make == type(None):
-                widget.value = lambda: None
-                widget.valueChanged = widget.objectNameChanged
-                widget.setValue = lambda *a: None
 
             self._secondaryParamWidgets[key] = widget
             self._ui.layParams.addRow(label, widget)
@@ -183,6 +171,9 @@ def _make_int_spinbox(parent, start=0, end=10, step=1, value=1, suffix=''):
 def _make_checkbox(parent, value):
     checkbox = QCheckBox(parent=parent)
     checkbox.setChecked(value)
+    checkbox.value = checkbox.isChecked
+    checkbox.valueChanged = checkbox.toggled
+    checkbox.setValue = checkbox.setChecked
     return checkbox
 
 
@@ -190,10 +181,16 @@ def _make_separator(parent, *args, **kwargs):
     sep = QFrame(parent=parent)
     sep.setFrameShape(QFrame.HLine)
     sep.setFrameShadow(QFrame.Sunken)
+    sep.value = lambda: None
+    sep.valueChanged = sep.objectNameChanged
+    sep.setValue = lambda *a: None
     return sep
 
 
 def _make_lineedit(parent, value):
     lineedit = QLineEdit(parent=parent)
     lineedit.setText(value)
+    lineedit.value = lineedit.text
+    lineedit.valueChanged = lineedit.textChanged
+    lineedit.setValue = lineedit.setText
     return lineedit
