@@ -1,6 +1,7 @@
 from io import BytesIO
 
 from PyQt5 import uic
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QWidget, QComboBox, QDoubleSpinBox, QCheckBox, QFrame, QLineEdit, QSpinBox
 
 markup = BytesIO(bytes('''<?xml version="1.0" encoding="UTF-8"?>
@@ -147,6 +148,10 @@ class ParamInputWidget(QWidget):
     def saveConfig(self):
         self.collectParams()
         self._secondaryParams.save_config()
+
+    @pyqtSlot(bool)
+    def on_grpParams_toggled(self, value):
+        self._ui.widget.setVisible(value)
 
 
 def _make_double_spinbox(parent, start=0.0, end=1.0, step=0.1, decimals=2, value=0.1, suffix=''):
