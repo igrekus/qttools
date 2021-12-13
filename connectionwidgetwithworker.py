@@ -166,7 +166,7 @@ class ConnectionWidgetWithWorker(QWidget):
         self._token = CancelToken()
         self._worker.runTask(
             fn=self._controller.connect,
-            fn_finished=self.on_connectFinished,
+            fn_finished=self._connectFinishedCallback,
             token=self._token,
             addrs={k: w.address for k, w in self._widgets.items()},
         )
@@ -174,7 +174,8 @@ class ConnectionWidgetWithWorker(QWidget):
 
     @pyqtSlot(TaskResult)
     def on_connectFinished(self, result):
-        if not self._controller.found:
+        ok, msg = result.values
+        if not ok:
             print('connect error, check connection')
             return
 
