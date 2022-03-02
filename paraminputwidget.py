@@ -1,7 +1,7 @@
 from io import BytesIO
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QComboBox, QDoubleSpinBox, QCheckBox, QFrame, QLineEdit, QSpinBox
 
 markup = BytesIO(bytes('''<?xml version="1.0" encoding="UTF-8"?>
@@ -85,6 +85,7 @@ markup = BytesIO(bytes('''<?xml version="1.0" encoding="UTF-8"?>
 
 
 class ParamInputWidget(QWidget):
+    paramsChanged = pyqtSignal()
 
     def __init__(self, parent=None, primaryParams=None, secondaryParams=None):
         super().__init__(parent=parent)
@@ -132,6 +133,7 @@ class ParamInputWidget(QWidget):
 
             self._secondaryParamWidgets[key] = widget
             self._ui.layParams.addRow(label, widget)
+            widget.valueChanged.connect(self.on_value_edited)
 
     def loadConfig(self):
         self._secondaryParams.load_from_config()
@@ -139,7 +141,7 @@ class ParamInputWidget(QWidget):
             self._secondaryParamWidgets[key].setValue(value)
 
     def collectParams(self):
-        self._secondaryParams.params = self.params
+        self._secondaryParams.params = dict(self.params)
 
     @property
     def params(self):
@@ -152,6 +154,10 @@ class ParamInputWidget(QWidget):
     @pyqtSlot(bool)
     def on_grpParams_toggled(self, value):
         self._ui.widget.setVisible(value)
+
+    def on_value_edited(self, value):
+        self._secondaryParams.params = self.params
+        self.paramsChanged.emit()
 
 
 def _make_double_spinbox(parent, start=0.0, end=1.0, step=0.1, decimals=2, value=0.1, suffix=''):
